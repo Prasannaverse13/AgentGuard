@@ -11,7 +11,7 @@ const PATTERNS: { kind: Leak["kind"]; re: RegExp; check?: (m: string) => boolean
   { kind: "email", re: /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g },
   { kind: "iban", re: /\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,4})?\b/g },
   { kind: "card", re: /\b(?:\d[ -]?){13,19}\b/g, check: (m) => luhn(m.replace(/\D/g, "")) },
-  { kind: "phone", re: /(?<![\w.])\+?\d[\d ()-]{8,16}\d(?![\w.])/g, check: (m) => m.replace(/\D/g, "").length >= 9 && !/^\d{4}-\d{2}-\d{2}$/.test(m.trim()) },
+  { kind: "phone", re: /(?<![\w.])\+?\d[\d ()-]{8,16}\d(?!\w|\.\d)/g, check: (m) => m.replace(/\D/g, "").length >= 9 && !/^\d{4}-\d{2}-\d{2}$/.test(m.trim()) },
   { kind: "account number", re: /\b(?:acct|account|a\/c|routing|sort code|ifsc)[\s:#.no]*([A-Z0-9-]{6,20})\b/gi },
 ];
 

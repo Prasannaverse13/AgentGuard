@@ -15,6 +15,12 @@ test("masks emails, phones, ibans and real card numbers", () => {
   assert.ok(r.text.includes("[email hidden]"));
 });
 
+test("masks a phone number at the end of a sentence", () => {
+  const r = redact("Contact billing@kite-labs.dev or +91 98765 43210. IBAN DE89 3704 0044 0532 0130 00.");
+  assert.deepEqual(r.hidden.map((h) => h.kind).sort(), ["email", "iban", "phone"]);
+  assert.ok(!r.text.includes("98765"));
+});
+
 test("does not mask dates, amounts or invoice numbers", () => {
   assert.deepEqual(findLeaks("Invoice INV-2041. Amount 840 USDC. Due 2026-11-20."), []);
   assert.equal(luhn("4111111111111112"), false);
