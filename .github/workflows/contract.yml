@@ -1,0 +1,25 @@
+# Builds the vault contract to wasm in the cloud, so nothing is compiled on your laptop.
+# GitHub: Actions tab, "Build contract", Run workflow. Then download the artifact "agentguard_vault".
+name: Build contract
+on:
+  workflow_dispatch: {}
+  push:
+    paths: ["contract/**"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - run: cargo install cargo-near --locked
+      - name: Test and build
+        working-directory: contract
+        run: |
+          cargo test
+          cargo near build non-reproducible-wasm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agentguard_vault
+          path: contract/target/near/agentguard_vault.wasm
